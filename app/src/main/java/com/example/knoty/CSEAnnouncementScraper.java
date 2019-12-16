@@ -1,5 +1,7 @@
 package com.example.knoty;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -9,6 +11,10 @@ import org.jsoup.select.*;
 
 class CSEAnnouncementScraper extends AnnouncementScraper {
     int UNIQUE_ID = 2;
+
+    CSEAnnouncementScraper(Context ctx) {
+        super(ctx);
+    }
 
     // Categories
     // 1 : 전체 공지

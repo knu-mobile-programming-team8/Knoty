@@ -34,7 +34,7 @@ public abstract class AnnouncementScraper {
         this.ctx = ctx;
     }
 
-    public void doScrapTask(int category, int page, int maxNoti) {
+    public void doScrapTask(int category, int page) {
         ScrapTask scrapTask = new ScrapTask();
         scrapTask.execute(category, page);
     }

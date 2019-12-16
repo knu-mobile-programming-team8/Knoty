@@ -1,6 +1,8 @@
 package com.example.knoty;
 
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -10,6 +12,9 @@ import org.jsoup.select.*;
 
 class MainAnnouncementScraper extends AnnouncementScraper {
     int UNIQUE_ID = 1;
+    MainAnnouncementScraper(Context ctx) {
+        super(ctx);
+    }
 
     // Categories
     // 1 : 학사 공지
