@@ -1,5 +1,7 @@
 package com.example.knoty;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -8,27 +10,17 @@ import java.util.List;
 
 public abstract class AnnouncementScraper {
     int UNIQUE_ID;
-
-    class AnnouncementDBHelper {
-        AnnouncementDBHelper() {}
-
-        void create(Announcement a) {
-
-        }
-
-    }
-
+    Context ctx;
 
     class ScrapTask extends AsyncTask<Integer, Void, Void> {
         @Override
         protected Void doInBackground(Integer... integers) {
             int category = integers[0];
             int page = integers[1];
-            int maxNoti = integers[2];
 
             try {
                 ArrayList<Announcement> list = scrap(category, page);
-                updateListInStorage(list, maxNoti);
+                updateListInStorage(list);
             }
             catch(IOException e) {
                 return null;
@@ -38,17 +30,21 @@ public abstract class AnnouncementScraper {
         }
     }
 
-    AnnouncementScraper() {
-
+    AnnouncementScraper(Context ctx) {
+        this.ctx = ctx;
     }
 
-    public void doScrapTask(int category, int page) {
+    public void doScrapTask(int category, int page, int maxNoti) {
         ScrapTask scrapTask = new ScrapTask();
         scrapTask.execute(category, page);
     }
 
-    private boolean updateListInStorage(List<Announcement> list, int maxNoti) {
+    private boolean updateListInStorage(List<Announcement> list) {
+        AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
+        SQLiteDatabase DB = DBHelper.getWritableDatabase();
+
         for(Announcement a : list) {
+
         }
 
         return false;
