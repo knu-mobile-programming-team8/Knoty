@@ -2,6 +2,8 @@ package com.example.knoty;
 
 public class Announcement implements Comparable<Announcement> {
     int id;
+    int category;
+    int num;
     String title;
     String author;
     String date; // YYYY-MM-DD
@@ -14,8 +16,10 @@ public class Announcement implements Comparable<Announcement> {
 
     }
 
-    Announcement(int id, String title, String author, String date, String url) {
+    Announcement(int id, int category, int num, String title, String author, String date, String url) {
         this.id = id;
+        this.category = category;
+        this.num = num;
         this.title = title;
         this.author = author;
         this.date = date;

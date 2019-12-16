@@ -8,6 +8,7 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 class CSEAnnouncementScraper extends AnnouncementScraper {
+    int UNIQUE_ID = 2;
 
     // Categories
     // 1 : 전체 공지
@@ -34,9 +35,9 @@ class CSEAnnouncementScraper extends AnnouncementScraper {
         for(Element row : table.children()) {
             Elements items = row.children();
 
-            String idStr = items.get(0).text();
-            if(idStr.equals("공지")) continue;
-            int id = Integer.parseInt(idStr);
+            String numStr = items.get(0).text();
+            if(numStr.equals("공지")) continue;
+            int num = Integer.parseInt(numStr);
 
             String title = items.get(1).text();
             String author = items.get(2).text();
@@ -44,7 +45,7 @@ class CSEAnnouncementScraper extends AnnouncementScraper {
 
             String articleUrl = items.get(1).children().get(0).attributes().get("href");
 
-            Announcement a = new Announcement(id, title, author, date, baseUrl + articleUrl);
+            Announcement a = new Announcement(UNIQUE_ID, category, num, title, author, date, baseUrl + articleUrl);
             list.add(a);
         }
 

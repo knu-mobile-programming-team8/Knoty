@@ -9,6 +9,7 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 class MainAnnouncementScraper extends AnnouncementScraper {
+    int UNIQUE_ID = 1;
 
     // Categories
     // 1 : 학사 공지
@@ -25,9 +26,9 @@ class MainAnnouncementScraper extends AnnouncementScraper {
         for(Element row : table.children()) {
             Elements items = row.children();
 
-            String idStr = items.get(0).text();
-            if(idStr.equals("공지")) continue;
-            int id = Integer.parseInt(idStr);
+            String numStr = items.get(0).text();
+            if(numStr.equals("공지")) continue;
+            int num = Integer.parseInt(numStr);
 
             String title = items.get(1).text();
             String author = items.get(3).text();
@@ -37,7 +38,7 @@ class MainAnnouncementScraper extends AnnouncementScraper {
             String articleJS = items.get(1).children().get(0).attributes().get("href");
             int articleCode = Integer.parseInt(articleJS.split("\'")[1]);
 
-            Announcement a = new Announcement(id, title, author, date, articleUrl + articleCode);
+            Announcement a = new Announcement(UNIQUE_ID, category, num, title, author, date, articleUrl + articleCode);
             list.add(a);
         }
 
