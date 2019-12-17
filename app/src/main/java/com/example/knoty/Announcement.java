@@ -11,6 +11,7 @@ public class Announcement implements Comparable<Announcement> {
 
     boolean read = false;
     boolean bookmark = false;
+    boolean pushed = false;
 
     Announcement() {
 

@@ -42,7 +42,7 @@ public abstract class AnnouncementScraper {
         scrapTask.execute(category, page);
     }
 
-    private boolean updateListInStorage(List<Announcement> list) {
+    private void updateListInStorage(List<Announcement> list) {
         AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
         SQLiteDatabase DB = DBHelper.getWritableDatabase();
 
@@ -58,13 +58,9 @@ public abstract class AnnouncementScraper {
 
             DB.replace("announcement", null, contentValues);
         }
-
-        return false;
     }
 
-    public ArrayList<Announcement> getListInStorage(int category, int maxItems, boolean onlyUnread) {
-        // TODO: maxItems, onlyUread
-
+    public ArrayList<Announcement> getListInStorage(int category, int maxItems, boolean onlyUnpushed) {
         ArrayList<Announcement> list = new ArrayList<Announcement>();
 
         AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
@@ -72,11 +68,11 @@ public abstract class AnnouncementScraper {
 
         Cursor cursor = DB.query("announcement",
                 null,
-                "id = ? AND category = ?",
+                "id = ? AND category = ? " + (onlyUnpushed ? "AND pushed = 0" : ""),
                 new String[]{Integer.toString(UNIQUE_ID), Integer.toString(category)},
                 null,
                 null,
-                null);
+                "date DESC");
 
         if(cursor == null) return list;
 
@@ -94,13 +90,42 @@ public abstract class AnnouncementScraper {
                 a.author = cursor.getString(cursor.getColumnIndex("author"));
                 a.url = cursor.getString(cursor.getColumnIndex("url"));
 
-                list.add(a);
+                a.read = cursor.getInt(cursor.getColumnIndex("read")) > 0;
+                a.bookmark = cursor.getInt(cursor.getColumnIndex("bookmark")) > 0;
+                a.pushed = cursor.getInt(cursor.getColumnIndex("pushed")) > 0;
+
+                if(list.size() >= maxItems) break;
             } while(cursor.moveToNext());
         }
 
         cursor.close();
+        DB.close();
 
         return list;
+    }
+
+    public void markAsPushed(List<Announcement> list) {
+        AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
+        SQLiteDatabase DB = DBHelper.getWritableDatabase();
+
+        for(Announcement a : list) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("pushed", true);
+
+            DB.update(
+                "announcement", contentValues,
+                "id = ? AND category = ? AND num = ?",
+                new String[]{ Integer.toString(a.id), Integer.toString(a.category), Integer.toString(a.num) }
+            );
+        }
+
+        DB.close();
+    }
+
+    public void markAsPushed(Announcement a) {
+        ArrayList<Announcement> list = new ArrayList<Announcement>();
+        list.add(a);
+        markAsPushed(list);
     }
 
     public abstract ArrayList<Announcement> scrap(int category, int page) throws IOException;

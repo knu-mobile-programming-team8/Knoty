@@ -1,13 +1,16 @@
 package com.example.knoty;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class AnnouncementDBHelper extends SQLiteOpenHelper {
-    public AnnouncementDBHelper(Context context) {
-        super(context, "announcementlist.db", null, 1);
+    Context context;
 
+    public AnnouncementDBHelper(Context context) {
+        super(context, "announcementlist.db", null, 2);
+        this.context = context;
     }
 
     @Override
@@ -16,7 +19,7 @@ public class AnnouncementDBHelper extends SQLiteOpenHelper {
             "CREATE TABLE IF NOT EXISTS announcement (" +
             "id NUMBER, category NUMBER, num NUMBER," +
             "title TEXT, author TEXT, date TEXT, url TEXT," +
-            "read NUMBER, bookmark NUMBER" +
+            "read NUMBER, bookmark NUMBER, pushed NUMBER," +
             "PRIMARY KEY (id, category, num)" +
             ");"
         );
