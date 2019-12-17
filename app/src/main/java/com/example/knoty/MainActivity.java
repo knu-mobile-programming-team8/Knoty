@@ -3,6 +3,7 @@ package com.example.knoty;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.menu1: //옵션 메뉴
-                Toast.makeText(this, "option selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, OptionActivity.class);
+                startActivity(intent); //옵션 액티비티로 전환
                 break;
         }
 
