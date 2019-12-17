@@ -46,6 +46,7 @@ public abstract class AnnouncementScraper {
         AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
         SQLiteDatabase DB = DBHelper.getWritableDatabase();
 
+        Log.d("DBi", Integer.toString(list.size()));
         for(Announcement a : list) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("id", UNIQUE_ID);;
@@ -55,6 +56,10 @@ public abstract class AnnouncementScraper {
             contentValues.put("author", a.author);
             contentValues.put("url", a.url);
             contentValues.put("date", a.date);
+
+            contentValues.put("pushed", 0);
+            contentValues.put("read", 0);
+            contentValues.put("bookmark", 0);
 
             DB.replace("announcement", null, contentValues);
         }
@@ -69,10 +74,10 @@ public abstract class AnnouncementScraper {
         Cursor cursor = DB.query("announcement",
                 null,
                 "id = ? AND category = ? " + (onlyUnpushed ? "AND pushed = 0" : ""),
-                new String[]{Integer.toString(UNIQUE_ID), Integer.toString(category)},
+                 new String[]{Integer.toString(UNIQUE_ID), Integer.toString(category)},
                 null,
                 null,
-                "date DESC");
+                null);
 
         if(cursor == null) return list;
 
@@ -94,7 +99,7 @@ public abstract class AnnouncementScraper {
                 a.bookmark = cursor.getInt(cursor.getColumnIndex("bookmark")) > 0;
                 a.pushed = cursor.getInt(cursor.getColumnIndex("pushed")) > 0;
 
-                if(list.size() >= maxItems) break;
+                list.add(a);
             } while(cursor.moveToNext());
         }
 
