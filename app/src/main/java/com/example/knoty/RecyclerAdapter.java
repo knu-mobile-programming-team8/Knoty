@@ -27,6 +27,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int VIEW_TYPE_DIVIDER = 1;
     public static final int VIEW_TYPE_TOGGLE = 2;
     public static final int VIEW_TYPE_SPACE = 3; //DIVIDER에서 그냥 줄만 안 보이게 해서 빈 공백 구현
+    public static final int VIEW_TYPE_HEADLINE = 4;
 
     private String listFile;
 
@@ -41,9 +42,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if(viewType == VIEW_TYPE_DIVIDER || viewType == VIEW_TYPE_SPACE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.divider_recyclerview_item, parent, false);
             return new DividerViewHolder(view);
-        } else {
+        } else if(viewType == VIEW_TYPE_TOGGLE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.toggle_recyclerview_item, parent, false);
             return new ToggleViewHolder(view);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.headline_recyclerview_item, parent, false);
+            return new HeadlineViewHolder(view);
         }
     }
 
@@ -65,8 +69,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(list.get(position).getItemViewType() == VIEW_TYPE_SPACE) {
                 ((DividerViewHolder)holder).onBind(true);
             }
-        } else {
+        } else if(holder instanceof ToggleViewHolder) {
             ((ToggleViewHolder)holder).onBind(position);
+        } else if(holder instanceof HeadlineViewHolder) {
+            ((HeadlineViewHolder)holder).onBind(position);
         }
     }
 
@@ -172,7 +178,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    //토글 버튼이 있는 아이템뷰 (사진, 텍스트, 토글버튼)
+    //토글 버튼이 있는 아이템뷰 (사진, 텍스트, 토글버튼) (button drawable 자리가 1이면 toggle set 1, 아니면 toggle set 0)
     public class ToggleViewHolder extends RecyclerView.ViewHolder {
         private  View itemView;
         private ImageView imageView;
@@ -195,11 +201,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View.OnClickListener itemListener = data.getItemListener();
             CompoundButton.OnCheckedChangeListener toggleListener = data.getToggleListener();
 
-            if(imageId != -1) imageView.setImageResource(imageId);
+            if(imageId != -1) { imageView.setImageResource(imageId); } else { imageView.setVisibility(View.GONE); }
             textView.setText(data.getContent());
             toggle.setChecked(data.getButtonDrawable() == 1 ? true : false);
             if(itemListener != null) itemView.setOnClickListener(itemListener);
             if(toggleListener != null) toggle.setOnCheckedChangeListener(toggleListener);
+        }
+    }
+
+    //헤드라인
+    public class HeadlineViewHolder extends RecyclerView.ViewHolder {
+        private View itemView;
+        private TextView headlineTextview;
+
+        public HeadlineViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            headlineTextview = itemView.findViewById(R.id.headlineTextView);
+        }
+
+        void onBind(int position) { //isSpace가 true면 구분선에서 선을 숨겨서 공백처럼 사용
+            headlineTextview.setText(list.get(position).getContent());
         }
     }
 
