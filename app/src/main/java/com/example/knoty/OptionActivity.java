@@ -50,13 +50,5 @@ public class OptionActivity extends AppCompatActivity {
         adapter.addItem(R.drawable.blacklist, "블랙 리스트", -1, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
 
         adapter.notifyDataSetChanged(); //데이터 변경 되었음을 알려준다
-
-        Log.d("======", "사과: " + (KnotyPreferences.shouldPush(this, "사과")));
-        Log.d("======", "치킨: " + (KnotyPreferences.shouldPush(this, "치킨")));
-        Log.d("======", "피자: " + (KnotyPreferences.shouldPush(this, "피자")));
-        Log.d("======", "달걀: " + (KnotyPreferences.shouldPush(this, "달걀")));
-        Log.d("======", "치킨: " + (KnotyPreferences.shouldPush(this, "단팥빵")));
-        Log.d("======", "당근: " + (KnotyPreferences.shouldPush(this, "당근")));
-        Log.d("======", "파프리카: " + (KnotyPreferences.shouldPush(this, "파프리카")));
     }
 }
