@@ -50,7 +50,21 @@ public class WhiteListActivity extends AppCompatActivity {
         adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
         adapter.addItem(-1, "장학", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
         adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+        adapter.addItem(-1, "장학", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
+        adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+        adapter.addItem(-1, "장학", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
+        adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+        adapter.addItem(-1, "장학", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
+        adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+        adapter.addItem(-1, "장학", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
+        adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+        adapter.addItem(-1, "장학", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
+        adapter.addItem(-1, "필독", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
 
         adapter.notifyDataSetChanged(); //데이터 변경 되었음을 알려준다
+
+        //footer 보이게
+        View footer = (View)findViewById(R.id.footer);
+        footer.setVisibility(View.VISIBLE);
     }
 }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Knoty</string>
     <string name="option">옵션</string>
+    <string name="add">추가</string>
 </resources>
