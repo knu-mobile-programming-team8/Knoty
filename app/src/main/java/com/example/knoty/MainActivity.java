@@ -49,16 +49,24 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Announcement> temp = null; //각 학과의 공지사항들을 잠깐 여기에 저장한 후 list에 합친다
         if(KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_DEPARTMENT_KNU, true)) { //학교 홈페이지 공지 모드인지 확인
             MainAnnouncementScraper mainAS = new MainAnnouncementScraper(this);
-            mainAS.doScrapTask(1, 1);
+            mainAS.doScrapTask(1, 1); //학교 홈페이지는 카테고리 1뿐
 
-            temp = mainAS.getListInStorage(1, 50, false);
+            temp = mainAS.getListInStorage(1, 20, false);
             for(Announcement ant : temp)  { list.add(ant); }
         }
         if(KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_DEPARTMENT_COMPUTER, false)) { //컴학 모드인지 확인
             CSEAnnouncementScraper cseAS = new CSEAnnouncementScraper(this);
-            cseAS.doScrapTask(0, 1);
+            cseAS.doScrapTask(0, 1); //카테고리 1~6까지. 0은 1~6을 모두 doScrapTask
 
-            temp = cseAS.getListInStorage(2, 50, false);
+            temp = cseAS.getListInStorage(1, 20, false);
+            for(Announcement ant : temp)  { list.add(ant); }
+            temp = cseAS.getListInStorage(2, 20, false);
+            for(Announcement ant : temp)  { list.add(ant); }
+            temp = cseAS.getListInStorage(3, 20, false);
+            for(Announcement ant : temp)  { list.add(ant); }
+            temp = cseAS.getListInStorage(4, 20, false);
+            for(Announcement ant : temp)  { list.add(ant); }
+            temp = cseAS.getListInStorage(5, 20, false);
             for(Announcement ant : temp)  { list.add(ant); }
         }
 

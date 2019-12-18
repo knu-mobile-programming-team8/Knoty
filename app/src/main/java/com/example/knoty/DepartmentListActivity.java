@@ -26,21 +26,27 @@ public class DepartmentListActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 KnotyPreferences.setBoolean(buttonView.getContext(), KnotyPreferences.TOGGLE_DEPARTMENT_KNU, isChecked);
-                MainActivity.adapter.notifyDataSetChanged();
+                if(!isChecked) {
+                    MainActivity.adapter.removeItemsById(1);
+                    MainActivity.adapter.notifyDataSetChanged();
+                }
             }
         };
         CompoundButton.OnCheckedChangeListener listener2 = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 KnotyPreferences.setBoolean(buttonView.getContext(), KnotyPreferences.TOGGLE_DEPARTMENT_COMPUTER, isChecked);
-                MainActivity.adapter.notifyDataSetChanged();
+                if(!isChecked) {
+                    MainActivity.adapter.removeItemsById(2);
+                    MainActivity.adapter.notifyDataSetChanged();
+                }
             }
         };
 
         //아이템 추가
         adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_SPACE);
         adapter.addItem(-1, "알림 받을 공지 종류 선택", -1, RecyclerAdapter.VIEW_TYPE_HEADLINE);
-        adapter.addItem(-1, "학교", KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_DEPARTMENT_KNU, true) ? 1 : 0, RecyclerAdapter.VIEW_TYPE_TOGGLE, null, listener1);
+        adapter.addItem(-1, "경북대학교", KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_DEPARTMENT_KNU, true) ? 1 : 0, RecyclerAdapter.VIEW_TYPE_TOGGLE, null, listener1);
         adapter.addItem(-1, "컴퓨터학부", KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_DEPARTMENT_COMPUTER, false) ? 1 : 0, RecyclerAdapter.VIEW_TYPE_TOGGLE, null, listener2);
     }
 }

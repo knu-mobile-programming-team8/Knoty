@@ -2,6 +2,7 @@ package com.example.knoty;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,5 +90,15 @@ public class MainActivityRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     //외부에서 아이템을 추가할 때
     public void addItem(Announcement ant) {
         list.add(ant);
+    }
+
+    //외부에서 아이템을 삭제할 때 (id 즉 학과 종류를 이용해서 해당 학과는 다 list에서 빼버린다)
+    public void removeItemsById(int id) {
+        for(int i = 0; i < list.size(); i++) {
+            if(list.get(i).id == id) { //지우려는 학과인 경우
+                list.remove(i);
+                Log.d("================", i + "를 지웠습니다");
+            }
+        }
     }
 }
