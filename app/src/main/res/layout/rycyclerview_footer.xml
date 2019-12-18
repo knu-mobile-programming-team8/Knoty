@@ -17,8 +17,9 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="5dp"
         app:srcCompat="@drawable/plus" />
 
     <TextView
@@ -26,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
+        android:textColor="#000"
         android:text="@string/add" />
 
 </LinearLayout>
