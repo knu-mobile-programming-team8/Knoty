@@ -17,6 +17,7 @@ class CSEAnnouncementScraper extends AnnouncementScraper {
     }
 
     // Categories
+    // 0 : All
     // 1 : 전체 공지
     // 2 : 학사
     // 3 : ABEEK
@@ -26,6 +27,16 @@ class CSEAnnouncementScraper extends AnnouncementScraper {
     @Override
     public ArrayList<Announcement> scrap(int category, int page) throws IOException {
         ArrayList<Announcement> list = new ArrayList<Announcement>();
+
+        if(category == 0) {
+            list.addAll(scrap(1, page));
+            list.addAll(scrap(2, page));
+            list.addAll(scrap(3, page));
+            list.addAll(scrap(4, page));
+            list.addAll(scrap(5, page));
+            list.addAll(scrap(6, page));
+            return list;
+        }
 
         String categoryStr = "";
         if(2 <= category && category <= 6) categoryStr = "_" + category;
