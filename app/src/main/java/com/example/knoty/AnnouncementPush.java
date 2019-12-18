@@ -25,6 +25,10 @@ public class AnnouncementPush {
         this.url = url;
     }
 
+    public AnnouncementPush(Context ctx, Announcement anno) {
+        this(ctx, anno.title, anno.date, anno.url);
+    }
+
     //푸쉬 알림을 실행시킨다
     public void alert() {
         //알림을 누르면 실행시킬 팬딩 인텐트 생성
