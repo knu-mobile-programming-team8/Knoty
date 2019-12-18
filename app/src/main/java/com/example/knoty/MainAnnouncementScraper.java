@@ -11,9 +11,9 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 class MainAnnouncementScraper extends AnnouncementScraper {
-    int UNIQUE_ID = 1;
     MainAnnouncementScraper(Context ctx) {
         super(ctx);
+        UNIQUE_ID = 1;
     }
 
     // Categories

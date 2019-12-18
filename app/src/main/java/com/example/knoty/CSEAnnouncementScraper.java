@@ -10,14 +10,12 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 class CSEAnnouncementScraper extends AnnouncementScraper {
-    int UNIQUE_ID = 2;
-
     CSEAnnouncementScraper(Context ctx) {
         super(ctx);
+        UNIQUE_ID = 2;
     }
 
     // Categories
-    // 0 : All
     // 1 : 전체 공지
     // 2 : 학사
     // 3 : ABEEK

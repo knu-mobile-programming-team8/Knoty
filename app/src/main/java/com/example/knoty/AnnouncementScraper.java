@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AnnouncementScraper {
-    int UNIQUE_ID;
+    int UNIQUE_ID = -1;
     Context ctx;
 
     class ScrapTask extends AsyncTask<Integer, Void, Void> {
