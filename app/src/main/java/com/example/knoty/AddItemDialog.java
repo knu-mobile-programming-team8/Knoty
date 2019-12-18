@@ -3,16 +3,12 @@ package com.example.knoty;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class AddItemDialog extends AlertDialog.Builder {
     private static Context context;
@@ -24,6 +20,8 @@ public class AddItemDialog extends AlertDialog.Builder {
 
     public static final int WHITELIST_DIALOG = 0;
     public static final int BLACKLIST_DIALOG = 1;
+
+    InputMethodManager imm;
 
     //kind는 화이트리스트인지 블랙리스트인지 (WHITELIST_DIALOG or BLACKLIST_DIALOG)
     public AddItemDialog(final Context context, int kind) {
@@ -40,6 +38,10 @@ public class AddItemDialog extends AlertDialog.Builder {
         layoutParams.setMargins(dp2px(20), dp2px(10), dp2px(20), 0);
         editText = new EditText(context);
         editText.setHint(R.string.edittext_hint);
+        if(editText.requestFocus()) { //editText에 바로 포커스 주고 가상 키보드 띄우기
+            imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
         container.addView(editText);
         editText.setLayoutParams(layoutParams);
         builder.setView(container);
@@ -48,12 +50,28 @@ public class AddItemDialog extends AlertDialog.Builder {
         builder.setPositiveButton(R.string.enroll, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addListItem(editText.getText().toString());
+                String str = editText.getText().toString();
+                if(str.contains(",")) {
+                    Toast.makeText(context, "쉼표(,)가 들어가는 단어는 지정할 수 없습니다.", Toast.LENGTH_LONG).show();
+                } else if(!addListItem(str)) {
+                    dialog.cancel();
+                }
+
+                //가상 키보드 숨기기
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
         });
 
         //부정적 버튼
-        builder.setNegativeButton(R.string.cancel, null); //버튼만 있고 아무 기능도 안 함
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+                //가상 키보드 숨기기
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            }
+        });
     }
 
     public static int dp2px(float dips)
@@ -82,11 +100,13 @@ public class AddItemDialog extends AlertDialog.Builder {
         alertDialog.show();
     }
 
-    //화이트리스트나 블랙리스트에 단어를 추가 (화이트는 ADD_TO_WHITELIST, 블랙은 ADD_TO_BLACKLIST)
-    public void addListItem(String str) {
-        if(str == null || str.equals("")) return; //예외 처리(암것도 입력 안하고 엔터하면 ""이 들어옴)
+    //화이트리스트나 블랙리스트에 단어를 추가 (화이트는 ADD_TO_WHITELIST, 블랙은 ADD_TO_BLACKLIST), 추가에 실패하면 false
+    public boolean addListItem(String str) {
+        if(str == null || str.equals("")) return false; //예외 처리(암것도 입력 안하고 엔터하면 ""이 들어옴)
 
-        KnotyPreferences.appendPreferences(context, (kind == WHITELIST_DIALOG ? KnotyPreferences.WHITELIST_PREFERENCE : KnotyPreferences.BLACKLIST_PREFERENCE), str);
+        KnotyPreferences.appendStringToStringSet(context, (kind == WHITELIST_DIALOG ? KnotyPreferences.WHITELIST_PREFERENCE : KnotyPreferences.BLACKLIST_PREFERENCE), str);
         Toast.makeText(context, str + "를 추가하였습니다.", Toast.LENGTH_SHORT).show();
+
+        return true;
     }
 }

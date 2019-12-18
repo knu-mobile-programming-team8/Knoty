@@ -1,7 +1,6 @@
 package com.example.knoty;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +11,13 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //adapter에 들어갈 list
@@ -57,7 +56,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         //item 하나하나의 textView와 imageView 등을 설정한다
         if(holder instanceof NormalViewHolder) {
-            ((NormalViewHolder)holder).onBind(list.get(position));
+            ((NormalViewHolder)holder).onBind(position);
         } else if(holder instanceof  DividerViewHolder) {
             //구분선은 onBind를 할 게 없음
             //((DividerViewHolder)holder).onBind(list.get(position));
@@ -67,7 +66,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((DividerViewHolder)holder).onBind(true);
             }
         } else {
-            ((ToggleViewHolder)holder).onBind(list.get(position));
+            ((ToggleViewHolder)holder).onBind(position);
         }
     }
 
@@ -117,7 +116,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             button = itemView.findViewById(R.id.button);
         }
 
-        void onBind(Data data) {
+        void onBind(final int position) {
+            Data data = list.get(position);
+
             int imageId = data.getImageDrawable();
             int buttonBackgroundId = data.getButtonDrawable();
             View.OnClickListener itemListener = data.getItemListener();
@@ -138,7 +139,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                KnotyPreferences.removePreferences(button.getContext(), listFile, textView.getText().toString());
+                                KnotyPreferences.removeStringAtStringSet(button.getContext(), listFile, textView.getText().toString());
+                                list.remove(position);
+                                notifyDataSetChanged();
                                 Toast.makeText(button.getContext(), textView.getText().toString() + "를 성공적으로 삭제하였습니다.", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -185,7 +188,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             toggle = itemView.findViewById(R.id.switch1);
         }
 
-        void onBind(Data data) {
+        void onBind(int position) {
+            Data data = list.get(position);
+
             int imageId = data.getImageDrawable();
             View.OnClickListener itemListener = data.getItemListener();
             CompoundButton.OnCheckedChangeListener toggleListener = data.getToggleListener();
@@ -288,6 +293,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public View.OnClickListener getButtonListener() {
             return buttonListener;
         }
+
         public CompoundButton.OnCheckedChangeListener getToggleListener() {
             return toggleListener;
         }

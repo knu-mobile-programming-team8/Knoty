@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,45 +17,60 @@ public class KnotyPreferences {
     public static final String TOGGLE_BLACKLIST = "blacklist_toggle";
 
     //리스트 전체를 Arraylist로 가져온다 (없으면 텅빈 ArrayList 반환(null은 아님))
-    public static ArrayList<String> getPreferences(Context context, String key) {
+    public static ArrayList<String> getStringSet(Context context, String key) {
         SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
-        Set<String> set = sp.getStringSet(key, null);
-        if(set == null) {
+        //초기 모델
+//        Set<String> set = sp.getStringSet(key, null);
+//        if(set == null) {
+//            return new ArrayList<String>();
+//        } else {
+//            return new ArrayList<String>(set);
+//        }
+
+        //개선 모델
+        String str = sp.getString(key, "");
+        if(str.length() <= 2) { //데이터가 없는 경우. 사실 == 0만 해도 되는데 혹시나 싶어서
             return new ArrayList<String>();
         } else {
-            return new ArrayList<String>(set);
+            return new ArrayList<String>(Arrays.asList(str.substring(1, str.length() - 1).split(", ")));
         }
     }
 
     //리스트 전체를 덮어써버린다
-    public static void setPreferences(Context context, String key, ArrayList<String> list) {
+    public static void setStringSet(Context context, String key, ArrayList<String> list) {
         SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        Set<String> set = new HashSet<String>();
-        set.addAll(list);
-        editor.putStringSet(key, set);
+
+        //초기 모델 - hashSet에 저장하면서 기존 ArrayList에 들어있던 순서대로 저장 안 되고 뒤죽박죽으로 저장되는 문제가 존재해서 StringSet으로 저장하는 게 아니라 사실 "[a, b, c]" 이렇게 되있는 arrayList.toString() 즉 문자열 하나로 저장
+//        Set<String> set = new HashSet<String>();
+//        set.addAll(list);
+//        editor.putStringSet(key, set);
+
+        //개선 모델
+        editor.putString(key, list.toString()); // [aaa, bbb, ccc] 이렇게 저장됨. 괄호 포함.
+
         editor.commit();
     }
 
-    //리스트에 value 하나만 추가한다
-    public static void appendPreferences(Context context, String key, String value) {
-        ArrayList<String> list = KnotyPreferences.getPreferences(context, key);
+    //String Set 리스트에 value 하나만 추가한다
+    public static void appendStringToStringSet(Context context, String key, String value) {
+        ArrayList<String> list = KnotyPreferences.getStringSet(context, key);
         if(!list.contains(value)) { //value가 기존에 없었던 경우에만 새로 추가하고 이미 있었으면 그냥 무시
             list.add(value);
-            KnotyPreferences.setPreferences(context, key, list);
+            KnotyPreferences.setStringSet(context, key, list);
         }
     }
 
     //리스트에서 value를 삭제한다 (원래 없는 경우에는 그냥 무시)
-    public static void removePreferences(Context context, String key, String value) {
-        ArrayList<String> list = KnotyPreferences.getPreferences(context, key);
+    public static void removeStringAtStringSet(Context context, String key, String value) {
+        ArrayList<String> list = KnotyPreferences.getStringSet(context, key);
         list.remove(value);
-        KnotyPreferences.setPreferences(context, key, list);
+        KnotyPreferences.setStringSet(context, key, list);
     }
 
     //리스트에 value가 있는지 확인한다
-    public static boolean hasPreferences(Context context, String key, String value) {
-        ArrayList<String> list = KnotyPreferences.getPreferences(context, key);
+    public static boolean hasStringAtStringSet(Context context, String key, String value) {
+        ArrayList<String> list = KnotyPreferences.getStringSet(context, key);
         if(list.contains(value)) {
             return true;
         } else {
@@ -68,7 +84,7 @@ public class KnotyPreferences {
         boolean isBlackListMode = getBoolean(context, TOGGLE_BLACKLIST);
 
         if(isWhiteListMode) { //화이트 리스트 켜놨을 때
-            ArrayList<String> list = getPreferences(context, WHITELIST_PREFERENCE);
+            ArrayList<String> list = getStringSet(context, WHITELIST_PREFERENCE);
             for(String str : list) {
                 if(string2check.contains(str)) {
                     return true;
@@ -76,7 +92,7 @@ public class KnotyPreferences {
             }
             return false;
         } else if(isBlackListMode) { //블랙 리스트 켜놨을 때
-            ArrayList<String> list = getPreferences(context, BLACKLIST_PREFERENCE);
+            ArrayList<String> list = getStringSet(context, BLACKLIST_PREFERENCE);
             for(String str : list) {
                 if(string2check.contains(str)) {
                     return false;
