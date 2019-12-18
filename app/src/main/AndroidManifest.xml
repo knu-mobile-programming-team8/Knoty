@@ -27,6 +27,9 @@
             android:enabled="true"
             android:exported="true" />
 
+        <activity android:name=".BlackListActivity"></activity>
+        <activity android:name=".WhiteListActivity" />
+        <activity android:name=".OptionActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
