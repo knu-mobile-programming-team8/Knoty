@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,15 +28,23 @@ public class OptionActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
 
+        View.OnClickListener listener1 = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "아이템 클릭", Toast.LENGTH_SHORT).show();
+            }
+        };
+        View.OnClickListener listener2 = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "아이템 클릭", Toast.LENGTH_SHORT).show();
+            }
+        };
 
         //옵션 리스트
-        ArrayList<Integer> imageList = new ArrayList<Integer>(Arrays.asList(R.drawable.whitelist, R.drawable.blacklist));
-        ArrayList<String> textList = new ArrayList<String>(Arrays.asList("화이트 리스트", "블랙 리스트"));
-        for(int i = 0; i < textList.size(); i++) {
-            adapter.addItem(imageList.get(i), textList.get(i), R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL);
-            adapter.addItem(imageList.get(i), textList.get(i), 1, RecyclerAdapter.VIEW_TYPE_TOGGLE);
-            adapter.addItem(-1, null, 1, RecyclerAdapter.VIEW_TYPE_DIVIDER);
-        }
+        adapter.addItem(R.drawable.whitelist, "화이트 리스트", -1, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
+        adapter.addItem(R.drawable.blacklist, "블랙 리스트", -1, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+
         adapter.notifyDataSetChanged(); //데이터 변경 되었음을 알려준다
     }
 }

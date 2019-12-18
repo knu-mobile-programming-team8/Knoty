@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -58,14 +59,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else  {
             ((ToggleViewHolder)holder).onBind(list.get(position));
         }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Toast.makeText(context, position + " 선택함", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -76,6 +69,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     //외부에서 item을 추가할 수 있다. image, button의 배경 설정을 안 하려면 -1을 넣으면 된다. str은 맘대로, viewType은 VIEW_TYPE_NORMAL, DIVIDER, TOGGLE 중 하나
     public void addItem(int image, String str, int button, int viewType) {
         Data data = new Data(image, str, button, viewType);
+        list.add(data);
+    }
+
+    public void addItem(int image, String str, int button, int viewType, View.OnClickListener itemListener) {
+        Data data = new Data(image, str, button, viewType, itemListener);
+        list.add(data);
+    }
+
+    public void addItem(int image, String str, int button, int viewType, View.OnClickListener itemListener, View.OnClickListener buttonListener) {
+        Data data = new Data(image, str, button, viewType, itemListener, buttonListener);
+        list.add(data);
+    }
+
+    public void addItem(int image, String str, int button, int viewType, View.OnClickListener itemListener, CompoundButton.OnCheckedChangeListener toggleListener) {
+        Data data = new Data(image, str, button, viewType, itemListener, toggleListener);
         list.add(data);
     }
 
@@ -117,6 +125,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     //토글 버튼이 있는 아이템뷰 (사진, 텍스트, 토글버튼)
     public class ToggleViewHolder extends RecyclerView.ViewHolder {
+        private  View itemView;
         private ImageView imageView;
         private TextView textView;
         private Switch toggle;
@@ -124,6 +133,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ToggleViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            this.itemView = itemView;
             imageView = itemView.findViewById(R.id.imageView);
             textView = itemView.findViewById(R.id.textView);
             toggle = itemView.findViewById(R.id.switch1);
@@ -131,10 +141,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onBind(Data data) {
             int imageId = data.getImageDrawable();
+            View.OnClickListener itemListener = data.getItemListener();
+            CompoundButton.OnCheckedChangeListener toggleListener = data.getToggleListener();
 
             if(imageId != -1) imageView.setImageResource(imageId);
             textView.setText(data.getContent());
             toggle.setChecked(data.getButtonDrawable() == 1 ? true : false);
+            if(itemListener != null) itemView.setOnClickListener(itemListener);
+            if(toggleListener != null) toggle.setOnCheckedChangeListener(toggleListener);
         }
     }
 
@@ -147,6 +161,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private String content;
         private int buttonDrawable;
         private int itemViewType;
+        private View.OnClickListener itemListener = null; //행 자체를 클릭할 때 이벤트
+        private View.OnClickListener buttonListener = null; //오른쪽 버튼을 클릭할 때 이벤트
+        private CompoundButton.OnCheckedChangeListener toggleListener = null; //오른쪽 토글 버튼을 클릭할 때 이벤트
 
         //옵션 액티비티에서 한 줄에 있는 이미지와 텍스트 설정 (ViewType이 0일 때는 button이 백그라운드 drawable 값이고 ViewType이 1일 때는 무조건 button값 -1 ViewType이 2일 때는 button값이 토글 여부에 따라 0 또는 1)
         public Data(int image, String str, int button, int itemViewType) {
@@ -154,6 +171,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.content = str;
             this.buttonDrawable = button;
             this.itemViewType = itemViewType;
+        }
+
+        public  Data(int image, String str, int button, int itemViewType, View.OnClickListener itemListener) {
+            this(image, str, button, itemViewType);
+            this.itemListener = itemListener;
+        }
+
+        public  Data(int image, String str, int button, int itemViewType, View.OnClickListener itemListener, View.OnClickListener buttonListener) {
+            this(image, str, button, itemViewType);
+            this.itemListener = itemListener;
+            this.buttonListener = buttonListener;
+        }
+
+        public  Data(int image, String str, int button, int itemViewType, View.OnClickListener itemListener, CompoundButton.OnCheckedChangeListener toggleListener) {
+            this(image, str, button, itemViewType);
+            this.itemListener = itemListener;
+            this.toggleListener = toggleListener;
         }
 
         public void setImageDrawable(int id) {
@@ -172,6 +206,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.itemViewType = itemViewType;
         }
 
+        public void setButtonListener(View.OnClickListener buttonListener) {
+            this.buttonListener = buttonListener;
+        }
+
+
+        public void setItemListener(View.OnClickListener itemListener) {
+            this.itemListener = itemListener;
+        }
+
+        public void setToggleListener(CompoundButton.OnCheckedChangeListener toggleListener) {
+            this.toggleListener = toggleListener;
+        }
+
         public int getImageDrawable() {
             return this.imageDrawable;
         }
@@ -186,6 +233,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public int getItemViewType() {
             return itemViewType;
+        }
+
+        public View.OnClickListener getItemListener() {
+            return itemListener;
+        }
+
+        public View.OnClickListener getButtonListener() {
+            return buttonListener;
+        }
+        public CompoundButton.OnCheckedChangeListener getToggleListener() {
+            return toggleListener;
         }
     }
 }
