@@ -37,6 +37,7 @@ public class BlackListActivity extends AppCompatActivity {
         };
 
         //옵션 리스트
+        adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_SPACE);
         adapter.addItem(R.drawable.whitelist, "블랙 리스트", 0, RecyclerAdapter.VIEW_TYPE_TOGGLE);
         adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_DIVIDER);
 
@@ -54,5 +55,12 @@ public class BlackListActivity extends AppCompatActivity {
         //footer 보이게
         View footer = (View)findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
+        footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddItemDialog dialog = new AddItemDialog(view.getContext());
+                dialog.alert();
+            }
+        });
     }
 }

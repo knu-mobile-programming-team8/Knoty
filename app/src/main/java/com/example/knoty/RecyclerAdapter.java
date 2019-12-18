@@ -25,6 +25,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int VIEW_TYPE_NORMAL = 0;
     public static final int VIEW_TYPE_DIVIDER = 1;
     public static final int VIEW_TYPE_TOGGLE = 2;
+    public static final int VIEW_TYPE_SPACE = 3; //DIVIDER에서 그냥 줄만 안 보이게 해서 빈 공백 구현
 
     @NonNull
     @Override
@@ -34,7 +35,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(viewType == VIEW_TYPE_NORMAL) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.normal_recyclerview_item, parent, false);
             return new NormalViewHolder(view);
-        } else if(viewType == VIEW_TYPE_DIVIDER) {
+        } else if(viewType == VIEW_TYPE_DIVIDER || viewType == VIEW_TYPE_SPACE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.divider_recyclerview_item, parent, false);
             return new DividerViewHolder(view);
         } else {
@@ -56,7 +57,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if(holder instanceof  DividerViewHolder) {
             //구분선은 onBind를 할 게 없음
             //((DividerViewHolder)holder).onBind(list.get(position));
-        } else  {
+
+            //공백은 onBind에서 구분선만 가려줌
+            if(list.get(position).getItemViewType() == VIEW_TYPE_SPACE) {
+                ((DividerViewHolder)holder).onBind(true);
+            }
+        } else {
             ((ToggleViewHolder)holder).onBind(list.get(position));
         }
     }
@@ -123,6 +129,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class DividerViewHolder extends RecyclerView.ViewHolder {
         public DividerViewHolder(@NonNull View itemView) {
             super(itemView);
+        }
+
+        void onBind(boolean isSpace) { //isSpace가 true면 구분선에서 선을 숨겨서 공백처럼 사용
+            if(isSpace) {
+                View divider = (View)itemView.findViewById(R.id.divider);
+                divider.setVisibility(View.GONE);
+            }
         }
     }
 

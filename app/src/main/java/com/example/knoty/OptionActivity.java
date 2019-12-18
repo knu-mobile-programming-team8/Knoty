@@ -45,6 +45,7 @@ public class OptionActivity extends AppCompatActivity {
         };
 
         //옵션 리스트
+        adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_SPACE); //빈공백 (메뉴가 너무 위에 딱 붙어있어서)
         adapter.addItem(R.drawable.whitelist, "화이트 리스트", -1, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
         adapter.addItem(R.drawable.blacklist, "블랙 리스트", -1, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
 

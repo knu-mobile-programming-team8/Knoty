@@ -37,6 +37,7 @@ public class WhiteListActivity extends AppCompatActivity {
         };
 
         //옵션 리스트
+        adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_SPACE);
         adapter.addItem(R.drawable.whitelist, "화이트 리스트", 1, RecyclerAdapter.VIEW_TYPE_TOGGLE);
         adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_DIVIDER);
 
@@ -66,5 +67,12 @@ public class WhiteListActivity extends AppCompatActivity {
         //footer 보이게
         View footer = (View)findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
+        footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddItemDialog dialog = new AddItemDialog(view.getContext());
+                dialog.alert();
+            }
+        });
     }
 }
