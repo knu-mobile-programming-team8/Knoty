@@ -105,7 +105,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onBind(Data data) {
             int imageId = data.getImageDrawable();
             int buttonBackgroundId = data.getButtonDrawable();
+            View.OnClickListener itemListener = data.getItemListener();
+            View.OnClickListener buttonListener = data.getButtonListener();
 
+            //버튼 배경 설정
             if(imageId != -1) imageView.setImageResource(imageId);
             textView.setText(data.getContent());
             if(buttonBackgroundId != -1) { //버튼 백그라운드가 설정되있으면 그걸로 보여주고 아니면 아예 버튼 숨김
@@ -113,6 +116,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             } else {
                 button.setVisibility(View.INVISIBLE);
             }
+
+            //클릭 리스터 설정
+            if(itemListener != null) itemView.setOnClickListener(itemListener);
+            if(buttonListener != null) itemView.setOnClickListener(buttonListener);
         }
     }
 

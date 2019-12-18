@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,13 +32,15 @@ public class OptionActivity extends AppCompatActivity {
         View.OnClickListener listener1 = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "아이템 클릭", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(OptionActivity.this, WhiteListActivity.class);
+                startActivity(intent);
             }
         };
         View.OnClickListener listener2 = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "아이템 클릭", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(OptionActivity.this, BlackListActivity.class);
+                startActivity(intent);
             }
         };
 
