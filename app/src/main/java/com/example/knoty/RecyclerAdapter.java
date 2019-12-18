@@ -1,6 +1,8 @@
 package com.example.knoty;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int VIEW_TYPE_DIVIDER = 1;
     public static final int VIEW_TYPE_TOGGLE = 2;
     public static final int VIEW_TYPE_SPACE = 3; //DIVIDER에서 그냥 줄만 안 보이게 해서 빈 공백 구현
+
+    private String listFile;
 
     @NonNull
     @Override
@@ -77,6 +81,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Data data = new Data(image, str, button, viewType);
         list.add(data);
     }
+    public void addItem(int image, String str, int button, int viewType, String listFile) { //만들기 싫었는데 버튼을 눌렀을 때 옆에있는 텍스트뷰를 읽어서 SharedPreferences에서 지우려면 어쩔 수 없이 필요한 함수
+        Data data = new Data(image, str, button, viewType);
+        this.listFile = listFile;
+        list.add(data);
+    }
 
     public void addItem(int image, String str, int button, int viewType, View.OnClickListener itemListener) {
         Data data = new Data(image, str, button, viewType, itemListener);
@@ -119,7 +128,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             textView.setText(data.getContent());
             if(buttonBackgroundId != -1) { button.setBackground(ContextCompat.getDrawable(button.getContext(), buttonBackgroundId)); } else { button.setVisibility(View.INVISIBLE); }
 
-            //클릭 리스터 설정
+            //x_button 누르면 옆의 textview 읽어와서 해당 문자열을 리스트에서 삭제하는 온클릭리스너 등록
+            if(buttonBackgroundId == R.drawable.x_button) {
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setTitle(R.string.ask_delete);
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                KnotyPreferences.removePreferences(button.getContext(), listFile, textView.getText().toString());
+                                Toast.makeText(button.getContext(), textView.getText().toString() + "를 성공적으로 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.cancel, null);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                });
+            }
+
+            //클릭 리스너 설정
             if(itemListener != null) itemView.setOnClickListener(itemListener);
             if(buttonListener != null) itemView.setOnClickListener(buttonListener);
         }

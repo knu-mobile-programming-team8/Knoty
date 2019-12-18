@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class BlackListActivity extends AppCompatActivity {
 
@@ -38,27 +41,33 @@ public class BlackListActivity extends AppCompatActivity {
 
         //옵션 리스트
         adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_SPACE);
-        adapter.addItem(R.drawable.whitelist, "블랙 리스트", 0, RecyclerAdapter.VIEW_TYPE_TOGGLE);
+        adapter.addItem(R.drawable.whitelist, "블랙 리스트", KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_BLACKLIST) ? 1 : 0, RecyclerAdapter.VIEW_TYPE_TOGGLE, null, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    KnotyPreferences.setBoolean(BlackListActivity.this, KnotyPreferences.TOGGLE_BLACKLIST, true);
+                    KnotyPreferences.setBoolean(BlackListActivity.this, KnotyPreferences.TOGGLE_WHITELIST, false);
+                } else {
+                    KnotyPreferences.setBoolean(BlackListActivity.this, KnotyPreferences.TOGGLE_BLACKLIST, false);
+                }
+            }
+        });
         adapter.addItem(-1, null, -1, RecyclerAdapter.VIEW_TYPE_DIVIDER);
 
-        adapter.addItem(-1, "튜터", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
-        adapter.addItem(-1, "대회", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
-        adapter.addItem(-1, "튜터", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
-        adapter.addItem(-1, "대회", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
-        adapter.addItem(-1, "튜터", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
-        adapter.addItem(-1, "대회", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
-        adapter.addItem(-1, "튜터", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener1);
-        adapter.addItem(-1, "대회", R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, listener2);
+        ArrayList<String> list = KnotyPreferences.getPreferences(this, KnotyPreferences.BLACKLIST_PREFERENCE);
+        for(String str : list) {
+            adapter.addItem(-1, str, R.drawable.x_button, RecyclerAdapter.VIEW_TYPE_NORMAL, KnotyPreferences.BLACKLIST_PREFERENCE);
+        }
 
         adapter.notifyDataSetChanged(); //데이터 변경 되었음을 알려준다
 
         //footer 보이게
-        View footer = (View)findViewById(R.id.footer);
+        final View footer = (View)findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
         footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddItemDialog dialog = new AddItemDialog(view.getContext());
+                AddItemDialog dialog = new AddItemDialog(view.getContext(), AddItemDialog.BLACKLIST_DIALOG);
                 dialog.alert();
             }
         });
