@@ -1,5 +1,6 @@
 package com.example.knoty;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,25 +9,28 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public abstract class AnnouncementScraper {
     int UNIQUE_ID = -1;
     Context ctx;
 
-    class ScrapTask extends AsyncTask<Integer, Void, Void> {
+    class ScrapTask extends AsyncTask<Integer, Void, ArrayList<Announcement>> {
         @Override
-        protected Void doInBackground(Integer... integers) {
+        protected ArrayList<Announcement> doInBackground(Integer... integers) {
             int category = integers[0];
             int page = integers[1];
 
             try {
                 ArrayList<Announcement> list = scrap(category, page);
-                updateListInStorage(list);
+                return updateListInStorage(list);
             }
             catch(IOException e) {
-                return null;
+                //
             }
 
             return null;
@@ -38,33 +42,56 @@ public abstract class AnnouncementScraper {
     }
 
     // 백그라운드 작업 실행
-    public void doScrapTask(int category, int page) {
+    // 실행 후 DB에 없던 레코드들 반환
+    // NOTE : Not Async
+    public ArrayList<Announcement> doScrapTask(int category, int page) {
         ScrapTask scrapTask = new ScrapTask();
-        scrapTask.execute(category, page);
+        try {
+            return scrapTask.execute(category, page).get();
+        }
+        catch(Exception e) {
+            return null;
+        }
     }
 
-    // DB에 레코드 업데이트 // 없으면 추가되고 있으면 변경 없음
-    private void updateListInStorage(List<Announcement> list) {
+    // DB에 레코드 업데이트
+    // DB에 새로 들어온 레코드 들을 반환
+    private ArrayList<Announcement> updateListInStorage(List<Announcement> list) {
         AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
         SQLiteDatabase DB = DBHelper.getWritableDatabase();
 
-        Log.d("DBi", Integer.toString(list.size()));
+        ArrayList<Announcement> newAnnouncementList = new ArrayList<>();
+
         for(Announcement a : list) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("id", UNIQUE_ID);;
-            contentValues.put("category", a.category);
-            contentValues.put("num", a.num);
-            contentValues.put("title", a.title);
-            contentValues.put("author", a.author);
-            contentValues.put("url", a.url);
-            contentValues.put("date", a.date);
+            boolean doesExist = DB.query("announcement",
+                    null,
+                    "id = ? AND category = ? AND num = ?",
+                    new String[]{Integer.toString(UNIQUE_ID), Integer.toString(a.category), Integer.toString(a.num)},
+                    null,
+                    null,
+                    null).getCount() > 0;
 
-            contentValues.put("pushed", 0);
-            contentValues.put("read", 0);
-            contentValues.put("bookmark", 0);
+            if(!doesExist) {
+                newAnnouncementList.add(a);
 
-            DB.replace("announcement", null, contentValues);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("id", UNIQUE_ID);;
+                contentValues.put("category", a.category);
+                contentValues.put("num", a.num);
+                contentValues.put("title", a.title);
+                contentValues.put("author", a.author);
+                contentValues.put("url", a.url);
+                contentValues.put("date", a.date);
+
+                contentValues.put("pushed", 0);
+                contentValues.put("read", 0);
+                contentValues.put("bookmark", 0);
+
+                DB.insert("announcement", null, contentValues);
+            }
         }
+
+        return newAnnouncementList;
     }
 
     // DB에 있는 레코드들을 반환
@@ -103,6 +130,7 @@ public abstract class AnnouncementScraper {
                 a.pushed = cursor.getInt(cursor.getColumnIndex("pushed")) > 0;
 
                 list.add(a);
+                if(list.size() >= maxItems) break;
             } while(cursor.moveToNext());
         }
 
@@ -141,13 +169,17 @@ public abstract class AnnouncementScraper {
         AnnouncementDBHelper DBHelper = new AnnouncementDBHelper(ctx);
         SQLiteDatabase DB = DBHelper.getWritableDatabase();
 
+        int deleted = 0;
+
         for(Announcement a : list) {
-            DB.delete(
+            deleted += DB.delete(
                 "announcement",
                 "id = ? AND category = ? AND num = ?",
                 new String[]{ Integer.toString(a.id), Integer.toString(a.category), Integer.toString(a.num) }
             );
         }
+
+        Log.d("DBdel", Integer.toString(deleted));
 
         DB.close();
     }
