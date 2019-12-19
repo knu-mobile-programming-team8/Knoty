@@ -24,6 +24,7 @@ import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
+
     public static MainActivityRecyclerAdapter adapter = null;
 
     @Override
@@ -31,8 +32,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initService(); //2시간마다 푸쉬 알림 해줄 서비스 초기화
         initRecyclerView(); //리사이클러뷰와 어댑터 연결
         loadNotices(); //메인화면에 표시할 공지사항들을 불러와서 리사이클러뷰에 표시한다
+    }
+
+    public void initService() {
+        if(KnotyService.myThread == null) { //처음 앱을 실행해서 KnotyService가 아직 실행되지 않은 경우
+            Intent intent = new Intent(this, KnotyService.class);
+            startService(intent); //KnotyService 실행
+            Log.d("==============", "KnotySerivce를 실행했습니다");
+        }
     }
 
     //리사이클러뷰에 어댑터를 연결

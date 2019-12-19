@@ -11,13 +11,14 @@ import androidx.core.app.NotificationCompat;
 public class RestartService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //무조건 이상한 notification으로 표시되게 돼있음 그러나 RestartService는 짧은 시간에 KnotyService만 실행시키고 바로 꺼버리기에 notification 안 나오게 함
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
         builder.setSmallIcon(R.mipmap.ic_launcher);
 
         Notification notification = builder.build();
         startForeground(9, notification);
 
-        Intent in = new Intent(this, KnotyService.class);
+        Intent in = new Intent(this, KnotyService.class); //KnotyService 시작
         startService(in);
 
         stopForeground(true);
