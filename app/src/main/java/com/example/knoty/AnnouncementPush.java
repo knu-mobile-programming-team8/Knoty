@@ -36,7 +36,7 @@ public class AnnouncementPush {
         PendingIntent pending = PendingIntent.getActivity(ctx, 0, intent, 0);
 
         //알림 설정
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, "default");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, "1");
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(msg)
