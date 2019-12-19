@@ -27,7 +27,9 @@ public class KnotyService extends Service implements Runnable {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) { //서비스 시작시마다 실행 됨
-        initializeNotification();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            initializeNotification();
+        }
 
         Thread thread = new Thread(new Runnable() {
             @Override
