@@ -23,9 +23,8 @@ import java.util.Calendar;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
-
-
     public static MainActivityRecyclerAdapter adapter = null;
+    public static Intent foregroundServiceIntent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +37,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initService() {
-        if(KnotyService.myThread == null) { //처음 앱을 실행해서 KnotyService가 아직 실행되지 않은 경우
-            Intent intent = new Intent(this, KnotyService.class);
-            startService(intent); //KnotyService 실행
-            Log.d("==============", "KnotySerivce를 실행했습니다");
+        if(KnotyService.serviceIntent == null) { //처음 앱을 실행해서 KnotyService가 아직 실행되지 않은 경우
+            Intent foregroundServiceIntent = new Intent(this, KnotyService.class);
+            startService(foregroundServiceIntent); //KnotyService 실행
+            Toast.makeText(this, "서비스 시작", Toast.LENGTH_SHORT).show();
+        } else {
+            foregroundServiceIntent = KnotyService.serviceIntent;
+            Toast.makeText(this, "서비스 아까 시작시켰음", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(foregroundServiceIntent != null) {
+            stopService(foregroundServiceIntent);
+            foregroundServiceIntent = null;
         }
     }
 
@@ -104,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu1: //옵션 메뉴
                 Intent intent = new Intent(MainActivity.this, OptionActivity.class);
                 startActivity(intent); //옵션 액티비티로 전환
+                break;
+            case R.id.menu2:
+                Toast.makeText(this, KnotyPreferences.getBoolean(this, "destroy", false) ? "성공!!!" : "실패..." , Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu3:
+                KnotyPreferences.setBoolean(this, "destroy", false);
                 break;
         }
 
