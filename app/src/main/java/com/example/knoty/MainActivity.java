@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
             temp = cseAS.getListInStorage(5, 20, false);
             for(Announcement ant : temp)  { list.add(ant); }
         }
+
+        Collections.sort(list);
 
         for(Announcement ant : list) {
             adapter.addItem(ant);

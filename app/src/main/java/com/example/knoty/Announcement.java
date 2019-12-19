@@ -34,9 +34,9 @@ public class Announcement implements Comparable<Announcement> {
 
     @Override
     public int compareTo(Announcement other) {
-        if(bookmark != other.bookmark) return bookmark == false ? -1 : 1;
-        if(read != other.read) return read == false ? -1 : 1;
-        if(num != other.num) return num > other.num ? -1 : 1;
+        if(bookmark != other.bookmark) return !bookmark ? -1 : 1;
+        if(read != other.read) return !read ? -1 : 1;
+        if(date != other.date) return date.compareTo(other.date) > 0 ? -1 : 1;
         return 0;
     }
 }

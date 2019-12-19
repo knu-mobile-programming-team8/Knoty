@@ -77,7 +77,7 @@ public abstract class AnnouncementScraper {
                  new String[]{Integer.toString(UNIQUE_ID), Integer.toString(category)},
                 null,
                 null,
-                "num DESC");
+                "date DESC");
 
         if(cursor == null) return list;
 
