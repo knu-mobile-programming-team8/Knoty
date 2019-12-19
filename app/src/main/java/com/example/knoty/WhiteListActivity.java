@@ -37,7 +37,7 @@ public class WhiteListActivity extends AppCompatActivity {
                 if(isChecked) {
                     KnotyPreferences.setBoolean(WhiteListActivity.this, KnotyPreferences.TOGGLE_WHITELIST, true);
                     KnotyPreferences.setBoolean(WhiteListActivity.this, KnotyPreferences.TOGGLE_BLACKLIST, false);
-                    Toast.makeText(WhiteListActivity.this, "화이트 리스트와 블랙 리스트 중 하나만 활성화 시킬 수 있습니다. 화이트 리스트를 끕니다.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WhiteListActivity.this, "화이트 리스트와 블랙 리스트 중 하나만 활성화 시킬 수 있습니다. 블랙 리스트를 끕니다.", Toast.LENGTH_LONG).show();
                 } else {
                     KnotyPreferences.setBoolean(WhiteListActivity.this, KnotyPreferences.TOGGLE_WHITELIST, false);
                 }
