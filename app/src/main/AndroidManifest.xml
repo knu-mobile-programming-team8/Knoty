@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DepartmentListActivity"></activity>
+
+        <activity android:name=".DepartmentListActivity" />
+
+        <service
+            android:name=".KnotyService"
+            android:enabled="true"
+            android:exported="true" />
 
         <service
             android:name=".RestartService"
@@ -25,16 +30,16 @@
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".RebootReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <service
-            android:name=".KnotyService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity android:name=".BlackListActivity" />
         <activity android:name=".WhiteListActivity" />

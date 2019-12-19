@@ -49,7 +49,7 @@ public class KnotyService extends Service implements Runnable {
 
     private void initializeNotification() {
         //노티피케이션 만들기
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1"); //1은 채널 아이디
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "2"); //2는 채널 아이디
         builder.setSmallIcon(R.mipmap.ic_launcher);
 
         NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle();
@@ -71,11 +71,11 @@ public class KnotyService extends Service implements Runnable {
 
         NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //오레오 이상 버전이면
-            manager.createNotificationChannel(new NotificationChannel("1", "내가 만든 Notification 채널명", NotificationManager.IMPORTANCE_NONE)); //1은 채널 아이디
+            manager.createNotificationChannel(new NotificationChannel("2", "안드로이드 정책으로 인한 알림", NotificationManager.IMPORTANCE_NONE)); //2는 채널 아이디
         }
 
         Notification notification = builder.build();
-        startForeground(1, notification);
+        startForeground(2, notification);
     }
 
     @Override
