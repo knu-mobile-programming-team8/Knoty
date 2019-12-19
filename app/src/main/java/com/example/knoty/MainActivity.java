@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         checkNotificationChannelSettings(); //노티피케이션 채널 알림 켜져있는지 아닌지 여부 확인
         initRecyclerView(); //리사이클러뷰와 어댑터 연결
         loadNotices(); //메인화면에 표시할 공지사항들을 불러와서 리사이클러뷰에 표시한다
-        
+
         initService(); //2시간마다 푸쉬 알림 해줄 서비스 초기화
     }
 
@@ -115,20 +115,12 @@ public class MainActivity extends AppCompatActivity {
             MainAnnouncementScraper mainAS = new MainAnnouncementScraper(this);
             mainAS.doScrapTask(1, 1); //학교 홈페이지는 카테고리 1뿐
 
-            int counter = 0;
-            while((temp = mainAS.getListInStorage(1, 20, false)).size() == 0) { //doScarpTask하고 아직 공지사항 덜 읽은 경우 (특히 앱 처음 시작시 빈 화면으로 시작하는 경우가 있음)
-                if(counter++ >= 5) break; //5번 시도해보고 안 되면 그냥 넘어가버림
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            };
-            for(Announcement ant : temp)  { list.add(ant); }
+            temp = mainAS.getListInStorage(1, 20, false);
+            for(Announcement ant : temp)  { list.add(ant); Log.d("===========", ant.title); }
         }
         if(KnotyPreferences.getBoolean(this, KnotyPreferences.TOGGLE_DEPARTMENT_COMPUTER, false)) { //컴학 모드인지 확인
             CSEAnnouncementScraper cseAS = new CSEAnnouncementScraper(this);
-            cseAS.doScrapTask(0, 1); //카테고리 1~6까지. 0은 1~6을 모두 doScrapTask
+            temp = cseAS.doScrapTask(0, 1); //카테고리 1~6까지. 0은 1~6을 모두 doScrapTask
 
             temp = cseAS.getListInStorage(1, 20, false);
             for(Announcement ant : temp)  { list.add(ant); }
