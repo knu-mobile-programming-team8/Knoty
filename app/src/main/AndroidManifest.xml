@@ -14,26 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DepartmentListActivity"></activity>
+
+        <activity android:name=".DepartmentListActivity" />
 
         <service
-            android:name=".RestartService"
+            android:name=".KnotyService"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".RebootReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <service
-            android:name=".KnotyService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity android:name=".BlackListActivity" />
         <activity android:name=".WhiteListActivity" />

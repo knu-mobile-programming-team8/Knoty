@@ -106,6 +106,11 @@ public class KnotyPreferences {
         }
     }
 
+    //Scrapping 해서 얻어온 공지사항 title을 파라미터로 넣어주면 푸쉬 알림을 해줘야하는지 아닌지 알려준다 (블랙 리스트에 들어있는지 화이트 리스트에 들어있는지 등을 알아서 검사해줌)
+    public static boolean shouldPush(Context context, Announcement ant) {
+        return shouldPush(context, ant.title);
+    }
+
     //boolean 값 1개만 저장
     public static void setBoolean(Context context, String key, boolean value) {
         SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
