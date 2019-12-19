@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
                 manager.createNotificationChannel(new NotificationChannel("1", "공지사항 알림", NotificationManager.IMPORTANCE_DEFAULT));
                 manager.createNotificationChannel(new NotificationChannel("2", "이 채널은 알림을 꺼주세요", NotificationManager.IMPORTANCE_MIN));
             }
-        }
 
-        if(areNotificationsEnabled(this, "2")) { //2번 채널이 켜져있는 경우 꺼달라고 요청
-            Toast.makeText(this, "이 채널에 대한 알림은 꺼주셔야합니다.", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-            intent.putExtra(Settings.EXTRA_CHANNEL_ID, "2");
-            startActivity(intent);
+            if(areNotificationsEnabled(this, "2")) { //2번 채널이 켜져있는 경우 꺼달라고 요청
+                Toast.makeText(this, "이 채널에 대한 알림은 꺼주셔야합니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, "2");
+                startActivity(intent);
+            }
         }
     }
 
