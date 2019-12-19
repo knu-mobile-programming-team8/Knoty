@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 public class KnotyService extends Service implements Runnable {
     public static Intent serviceIntent = null;
-    public static final int REFRESH_TERM_MILLISECONDS = 1000 *  2; //공지사항 파싱하는 주기 (2시간)
+    public static final int REFRESH_TERM_MILLISECONDS = 1000 * 60 60 * 2; //공지사항 파싱하는 주기 (2시간)
     private static final int MAX_ITEM = 3; //각 공지마다 받아올 최대 아이템 개수
     private static final int TRY_MAX_COUNT = 5; //공지 안 불러져왔을 때 최대 시도 개수(잘 불러왔는데 이미 다 기존에 저장되있는 거 일 수도 있음)
     private static final int TRY_TERM = 500; //재시도 간격 밀리초
