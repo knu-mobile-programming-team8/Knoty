@@ -36,7 +36,7 @@ public class Announcement implements Comparable<Announcement> {
     public int compareTo(Announcement other) {
         if(bookmark != other.bookmark) return bookmark == false ? -1 : 1;
         if(read != other.read) return read == false ? -1 : 1;
-        if(id != other.id) return id > other.id ? -1 : 1;
+        if(num != other.num) return num > other.num ? -1 : 1;
         return 0;
     }
 }
