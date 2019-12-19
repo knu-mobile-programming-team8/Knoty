@@ -2,14 +2,19 @@ package com.example.knoty;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static MainActivityRecyclerAdapter adapter = null;
@@ -30,10 +36,47 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        checkNotificationChannelSettings();
 
         initService(); //2시간마다 푸쉬 알림 해줄 서비스 초기화
         initRecyclerView(); //리사이클러뷰와 어댑터 연결
         loadNotices(); //메인화면에 표시할 공지사항들을 불러와서 리사이클러뷰에 표시한다
+    }
+
+    //노티피케이션 채널의 현재 설정값을 읽어오고 사용자에게 설정하라고 채널 설정창을 열어주는 함수
+    private void checkNotificationChannelSettings() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            List<NotificationChannel> channels = manager.getNotificationChannels();
+
+            if(channels.size() == 0) { //앱을 다운 받고 처음 실행이라서 아직 채널이 없음
+                manager.createNotificationChannel(new NotificationChannel("1", "공지사항 알림", NotificationManager.IMPORTANCE_DEFAULT));
+                manager.createNotificationChannel(new NotificationChannel("2", "이 채널은 알림을 꺼주세요", NotificationManager.IMPORTANCE_MIN));
+            }
+        }
+
+        if(areNotificationsEnabled(this, "2")) { //2번 채널이 켜져있는 경우 꺼달라고 요청
+            Toast.makeText(this, "이 채널에 대한 알림은 꺼주셔야합니다.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            intent.putExtra(Settings.EXTRA_CHANNEL_ID, "2");
+            startActivity(intent);
+        }
+    }
+
+    //노티피케이션 채널의 현재 설정값을 읽어옴
+    public boolean areNotificationsEnabled(Context context, String channelId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(channelId != null && !channelId.isEmpty()) {
+                NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationChannel channel = manager.getNotificationChannel(channelId);
+                return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+            }
+            return false;
+        } else {
+            return NotificationManagerCompat.from(context).areNotificationsEnabled();
+        }
     }
 
     public void initService() {
@@ -116,12 +159,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu1: //옵션 메뉴
                 Intent intent = new Intent(MainActivity.this, OptionActivity.class);
                 startActivity(intent); //옵션 액티비티로 전환
-                break;
-            case R.id.menu2:
-                Toast.makeText(this, KnotyPreferences.getBoolean(this, "destroy", false) ? "성공!!!" : "실패..." , Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.menu3:
-                KnotyPreferences.setBoolean(this, "destroy", false);
                 break;
         }
 

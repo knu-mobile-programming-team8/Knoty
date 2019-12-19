@@ -4,16 +4,7 @@
 
     <item
         android:id="@+id/menu1"
+        android:icon="@drawable/settings"
         android:title="@string/option"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu2"
-        android:title="체크"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/menu3"
-        android:title="초기화"
-        app:showAsAction="never" />
 </menu>

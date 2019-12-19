@@ -70,10 +70,6 @@ public class KnotyService extends Service implements Runnable {
         builder.setContentIntent(pendingIntent);
 
         NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //오레오 이상 버전이면
-            manager.createNotificationChannel(new NotificationChannel("2", "안드로이드 정책으로 인한 알림", NotificationManager.IMPORTANCE_NONE)); //2는 채널 아이디
-        }
-
         Notification notification = builder.build();
         startForeground(2, notification);
     }
