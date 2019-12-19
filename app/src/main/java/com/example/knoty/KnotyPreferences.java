@@ -15,6 +15,8 @@ public class KnotyPreferences {
     public static final String BLACKLIST_PREFERENCE = "blacklist";
     public static final String TOGGLE_WHITELIST = "whilelist_toggle";
     public static final String TOGGLE_BLACKLIST = "blacklist_toggle";
+    public static final String TOGGLE_DEPARTMENT_KNU = "knu_toggle";
+    public static final String TOGGLE_DEPARTMENT_COMPUTER = "computer_toggle";
 
     //리스트 전체를 Arraylist로 가져온다 (없으면 텅빈 ArrayList 반환(null은 아님))
     public static ArrayList<String> getStringSet(Context context, String key) {
@@ -112,9 +114,15 @@ public class KnotyPreferences {
         editor.commit();
     }
 
-    //boolean 값 1개 읽어옴
+    //boolean 값 1개 읽어옴 (기본값 false)
     public static boolean getBoolean(Context context, String key) {
         SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
         return sp.getBoolean(key, false);
+    }
+
+    //boolean 값 1개 읽어옴
+    public static boolean getBoolean(Context context, String key, boolean defaultVal) {
+        SharedPreferences sp = context.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
+        return sp.getBoolean(key, defaultVal);
     }
 }
